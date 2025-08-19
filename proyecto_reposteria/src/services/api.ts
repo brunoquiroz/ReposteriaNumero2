@@ -1,11 +1,7 @@
 import axios from 'axios';
 
-// ... existing code ...
-
-// Asegúrate de que la URL base sea correcta
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550'  // URL de producción en SeeNode
-  : 'http://localhost:3001/api';      // URL de desarrollo
+// Configuración para usar siempre SeeNode (sin localhost)
+const API_BASE_URL = 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550/api';
 
 // Crear instancia de axios
 const api = axios.create({
@@ -90,7 +86,7 @@ export const settingsAPI = {
     return response.data;
   },
   getPublic: async (): Promise<SiteSettings> => {
-    const response = await fetch('http://localhost:3001/api/public/settings');
+    const response = await fetch(`${API_BASE_URL}/public/settings`);
     return response.json();
   },
   update: async (key: string, value: string): Promise<void> => {
