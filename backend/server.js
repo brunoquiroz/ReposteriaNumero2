@@ -51,12 +51,28 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Configuración de la base de datos
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-};
+// Función para parsear DATABASE_URL
+function parseDatabaseUrl(url) {
+  const urlObj = new URL(url);
+  return {
+    host: urlObj.hostname,
+    port: urlObj.port || 3306,
+    user: urlObj.username,
+    password: urlObj.password,
+    database: urlObj.pathname.slice(1) // Remover el '/' inicial
+  };
+}
+
+// Configuración de la base de datos con soporte para DATABASE_URL
+const dbConfig = process.env.DATABASE_URL 
+  ? parseDatabaseUrl(process.env.DATABASE_URL)
+  : {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT || 3306
+    };
 
 // Crear conexión a la base de datos
 let db;
@@ -65,6 +81,11 @@ async function initDB() {
   try {
     db = await mysql.createConnection(dbConfig);
     console.log('Conectado a MySQL');
+    console.log('Configuración DB:', {
+      host: dbConfig.host,
+      database: dbConfig.database,
+      user: dbConfig.user
+    });
   } catch (error) {
     console.error('Error conectando a MySQL:', error);
     process.exit(1);
