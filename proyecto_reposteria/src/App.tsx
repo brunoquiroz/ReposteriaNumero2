@@ -46,21 +46,17 @@ function App() {
     }
   };
 
-  const handleAdminLogin = (success: boolean) => {
-    if (success) {
-      setIsAdmin(true);
-      setShowAdminLogin(false);
-      setShowAdminPanel(true);
-    }
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+    setShowAdminLogin(false);
+    setShowAdminPanel(true);
   };
 
   const handleLogout = () => {
     console.log('Cerrando sesión...');
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
     setIsAdmin(false);
-    setShowAdminLogin(false);
     setShowAdminPanel(false);
+    localStorage.removeItem('adminToken');
   };
 
   const handleBackToSite = () => {

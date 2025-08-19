@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Settings } from 'lucide-react';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -8,7 +8,7 @@ interface HeaderProps {
   isAdmin?: boolean;
 }
 
-export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmin = false }: HeaderProps) {
+export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmin }: HeaderProps) {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -28,7 +28,7 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
           </div>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-8 items-center">
             <button 
               onClick={() => scrollToSection('inicio')}
               className="text-amber-700 hover:text-amber-800 transition-colors font-medium"
@@ -42,16 +42,17 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
               Productos
             </button>
             <button 
-              onClick={() => scrollToSection('sobre-nosotros')}
+              onClick={() => scrollToSection('contacto')}
               className="text-amber-700 hover:text-amber-800 transition-colors font-medium"
             >
               Contacto
             </button>
             <button
               onClick={onAdminClick}
-              className="text-amber-700 hover:text-amber-800 transition-colors font-medium"
+              className="flex items-center space-x-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md transition-colors"
             >
-              {isAdmin ? 'Panel Admin' : 'Admin'}
+              <Settings size={16} />
+              <span>{isAdmin ? 'Panel Admin' : 'Admin'}</span>
             </button>
           </nav>
 
@@ -83,25 +84,17 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
                 Productos
               </button>
               <button 
-                onClick={() => scrollToSection('sobre-nosotros')}
-                className="block px-3 py-2 text-amber-700 hover:text-amber-800 transition-colors font-medium w-full text-left"
-              >
-                Sobre Nosotros
-              </button>
-              <button 
                 onClick={() => scrollToSection('contacto')}
                 className="block px-3 py-2 text-amber-700 hover:text-amber-800 transition-colors font-medium w-full text-left"
               >
                 Contacto
               </button>
               <button
-                onClick={() => {
-                  onAdminClick();
-                  setIsMenuOpen(false);
-                }}
-                className="block px-3 py-2 text-amber-700 hover:text-amber-800 transition-colors font-medium w-full text-left"
+                onClick={onAdminClick}
+                className="flex items-center space-x-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md transition-colors w-full"
               >
-                {isAdmin ? 'Panel Admin' : 'Admin'}
+                <Settings size={16} />
+                <span>{isAdmin ? 'Panel Admin' : 'Admin'}</span>
               </button>
             </div>
           </div>

@@ -10,106 +10,112 @@ const dbConfig = {
   database: 'db_n3nv4jxto8ds'
 };
 
-async function initializeDatabase() {
+const initSQL = `
+-- Crear las tablas
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    category_id INT NOT NULL,
+    status ENUM('Disponible', 'Agotado') DEFAULT 'Disponible',
+    image_url VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS admin_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS site_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) NOT NULL UNIQUE,
+    setting_value TEXT NOT NULL,
+    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Usuario admin (contraseña: admin123)
+INSERT IGNORE INTO admin_users (username, email, password_hash) VALUES 
+('admin', 'admin@reposteria.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+
+-- Configuraciones iniciales
+INSERT IGNORE INTO site_settings (setting_key, setting_value, description) VALUES 
+('hero_visible', 'true', 'Controla la visibilidad de la sección Hero'),
+('site_title', 'Repostería Artesanal', 'Título del sitio web'),
+('contact_email', 'contacto@reposteria.com', 'Email de contacto');
+
+-- Categorías de ejemplo
+INSERT IGNORE INTO categories (name, description) VALUES 
+('Tortas', 'Tortas artesanales para toda ocasión'),
+('Cupcakes', 'Cupcakes decorados y personalizados'),
+('Galletas', 'Galletas caseras y decoradas'),
+('Postres', 'Postres variados y deliciosos');
+
+-- Índices para optimización
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
+CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);
+CREATE INDEX IF NOT EXISTS idx_settings_key ON site_settings(setting_key);
+`;
+
+async function initDatabase() {
   let connection;
   
   try {
     console.log('🔍 Conectando a la base de datos SeeNode...');
+    console.log('🔗 Host:', dbConfig.host);
+    console.log('📊 Base de datos:', dbConfig.database);
     
-    // Crear conexión
     connection = await mysql.createConnection(dbConfig);
-    
     console.log('✅ Conectado exitosamente a SeeNode MySQL');
     
-    // Crear tabla categories
-    await connection.execute(`
-      CREATE TABLE IF NOT EXISTS categories (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('✅ Tabla categories creada');
+    // Ejecutar el script SQL
+    console.log('🚀 Ejecutando script de inicialización...');
+    const statements = initSQL.split(';').filter(stmt => stmt.trim());
     
-    // Crear tabla products
-    await connection.execute(`
-      CREATE TABLE IF NOT EXISTS products (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        price DECIMAL(10, 2) NOT NULL,
-        category_id INT,
-        image_url VARCHAR(500),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
-      )
-    `);
-    console.log('✅ Tabla products creada');
+    for (const statement of statements) {
+      if (statement.trim()) {
+        await connection.execute(statement);
+      }
+    }
     
-    // Crear tabla admin_users
-    await connection.execute(`
-      CREATE TABLE IF NOT EXISTS admin_users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('✅ Tabla admin_users creada');
+    console.log('✅ Base de datos inicializada correctamente');
     
-    // Crear tabla site_settings
-    await connection.execute(`
-      CREATE TABLE IF NOT EXISTS site_settings (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        setting_key VARCHAR(255) UNIQUE NOT NULL,
-        setting_value TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('✅ Tabla site_settings creada');
+    // Verificar que las tablas se crearon
+    const [tables] = await connection.execute('SHOW TABLES');
+    console.log('📋 Tablas creadas:', tables.map(t => Object.values(t)[0]));
     
-    // Insertar datos iniciales
-    // Categorías
-    await connection.execute(`
-      INSERT IGNORE INTO categories (name, description) VALUES 
-      ('Tortas', 'Deliciosas tortas para toda ocasión'),
-      ('Cupcakes', 'Cupcakes individuales perfectos para compartir'),
-      ('Galletas', 'Galletas artesanales con ingredientes premium'),
-      ('Postres', 'Variedad de postres tradicionales y modernos')
-    `);
-    console.log('✅ Categorías iniciales insertadas');
+    // Verificar usuario admin
+    const [users] = await connection.execute('SELECT username FROM admin_users');
+    console.log('👤 Usuarios admin:', users.map(u => u.username));
     
-    // Usuario admin
-    const bcrypt = require('bcryptjs');
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    await connection.execute(`
-      INSERT IGNORE INTO admin_users (email, password, name) VALUES 
-      ('admin@reposteria.com', ?, 'Administrador')
-    `, [hashedPassword]);
-    console.log('✅ Usuario admin creado');
-    
-    // Configuraciones del sitio
-    await connection.execute(`
-      INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES 
-      ('show_hero', 'true'),
-      ('hero_title', 'Bienvenido a Nuestra Repostería'),
-      ('hero_subtitle', 'Los mejores postres artesanales de la ciudad')
-    `);
-    console.log('✅ Configuraciones del sitio insertadas');
-    
-    console.log('\n🎉 ¡Base de datos inicializada exitosamente!');
-    console.log('📧 Email admin: admin@reposteria.com');
-    console.log('🔑 Contraseña admin: admin123');
+    console.log('\n🎉 ¡Inicialización completada!');
+    console.log('🔑 Credenciales de admin:');
+    console.log('   Usuario: admin');
+    console.log('   Contraseña: admin123');
     
   } catch (error) {
-    console.error('❌ Error al inicializar la base de datos:', error.message);
-    process.exit(1);
+    console.error('❌ Error inicializando la base de datos:', error.message);
+    if (error.code) {
+      console.error('🔍 Código de error:', error.code);
+    }
   } finally {
     if (connection) {
       await connection.end();
@@ -118,5 +124,4 @@ async function initializeDatabase() {
   }
 }
 
-// Ejecutar inicialización
-initializeDatabase();
+initDatabase();

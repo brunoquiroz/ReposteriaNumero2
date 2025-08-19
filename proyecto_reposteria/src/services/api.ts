@@ -1,9 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// ... existing code ...
 
+// Asegúrate de que la URL base sea correcta
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550'  // URL de producción en SeeNode
+  : 'http://localhost:3001/api';      // URL de desarrollo
+
+// Crear instancia de axios
 const api = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Interceptor para agregar token de autenticación
@@ -18,27 +27,17 @@ api.interceptors.request.use((config) => {
 export interface Product {
   id: number;
   name: string;
+  description: string;
   price: number;
   category_id: number;
-  category_name: string;
-  status: 'Disponible' | 'Agotado';
-  description?: string;
   image_url?: string;
   created_at: string;
-  updated_at: string;
 }
 
 export interface Category {
   id: number;
   name: string;
   description?: string;
-  created_at: string;
-}
-
-export interface DashboardStats {
-  totalProducts: number;
-  totalCategories: number;
-  availableProducts: number;
 }
 
 export interface SiteSettings {
@@ -46,32 +45,18 @@ export interface SiteSettings {
   [key: string]: string;
 }
 
-export const authAPI = {
-  login: async (username: string, password: string) => {
-    const response = await api.post('/auth/login', { username, password });
-    return response.data;
-  },
-};
-
+// API para productos
 export const productsAPI = {
   getAll: async (): Promise<Product[]> => {
     const response = await api.get('/products');
     return response.data;
   },
-  create: async (productData: FormData): Promise<Product> => {
-    const response = await api.post('/products', productData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+  create: async (product: Omit<Product, 'id' | 'created_at'>): Promise<Product> => {
+    const response = await api.post('/products', product);
     return response.data;
   },
-  update: async (id: number, productData: FormData): Promise<Product> => {
-    const response = await api.put(`/products/${id}`, productData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+  update: async (id: number, product: Partial<Product>): Promise<Product> => {
+    const response = await api.put(`/products/${id}`, product);
     return response.data;
   },
   delete: async (id: number): Promise<void> => {
@@ -79,24 +64,26 @@ export const productsAPI = {
   },
 };
 
+// API para categorías
 export const categoriesAPI = {
   getAll: async (): Promise<Category[]> => {
     const response = await api.get('/categories');
     return response.data;
   },
-  create: async (category: { name: string; description?: string }): Promise<Category> => {
+  create: async (category: Omit<Category, 'id'>): Promise<Category> => {
     const response = await api.post('/categories', category);
     return response.data;
   },
-};
-
-export const dashboardAPI = {
-  getStats: async (): Promise<DashboardStats> => {
-    const response = await api.get('/dashboard/stats');
+  update: async (id: number, category: Partial<Category>): Promise<Category> => {
+    const response = await api.put(`/categories/${id}`, category);
     return response.data;
+  },
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/categories/${id}`);
   },
 };
 
+// API para configuraciones
 export const settingsAPI = {
   getAll: async (): Promise<SiteSettings> => {
     const response = await api.get('/settings');
@@ -108,6 +95,14 @@ export const settingsAPI = {
   },
   update: async (key: string, value: string): Promise<void> => {
     await api.put(`/settings/${key}`, { value });
+  },
+};
+
+// API para autenticación
+export const authAPI = {
+  login: async (username: string, password: string): Promise<{ token: string }> => {
+    const response = await api.post('/auth/login', { username, password });
+    return response.data;
   },
 };
 
