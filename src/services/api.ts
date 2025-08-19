@@ -2,7 +2,7 @@
 
 // Asegúrate de que la URL base sea correcta
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://tu-app.seenode.com/api'  // URL de producción en SeeNode
+  ? 'db:mysql://db_n3nv4jxto8ds:EQRBFExDGFKZSoMQNaIjTLpq@up-de-fra1-mysql-1.db.run-on-seenode.com:11550/db_n3nv4jxto8ds'  // URL de producción en SeeNode
   : 'http://localhost:3001/api';      // URL de desarrollo
 
 export interface SiteSettings {
