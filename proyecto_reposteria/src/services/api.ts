@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_URL } from '../config/constants';
 
 // Configuración para usar siempre SeeNode (sin localhost)
-const API_BASE_URL = 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550/api';
+const API_BASE_URL = API_URL;
 
 // Crear instancia de axios
 const api = axios.create({

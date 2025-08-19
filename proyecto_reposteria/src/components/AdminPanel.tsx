@@ -10,6 +10,7 @@ import {
   Settings
 } from 'lucide-react';
 import { productsAPI, categoriesAPI, settingsAPI, Product, Category, SiteSettings } from '../services/api';
+import { API_BASE_URL } from '../config/constants';
 
 interface AdminPanelProps {
   onLogout: () => void;
@@ -133,7 +134,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout, onBackToSite }) => {
                           <div className="flex items-center">
                             {product.image_url && (
                               <img 
-                                src={`http://localhost:3001${product.image_url}`} 
+                                src={`${API_BASE_URL}${product.image_url}`} 
                                 alt={product.name}
                                 className="h-10 w-10 rounded-full object-cover mr-4"
                               />

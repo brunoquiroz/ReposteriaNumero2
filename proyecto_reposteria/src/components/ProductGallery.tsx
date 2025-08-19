@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
 import { productsAPI, categoriesAPI, Product, Category } from '../services/api';
+import { API_URL, API_BASE_URL } from '../config/constants';
 
 interface DisplayProduct {
   id: number;
@@ -29,7 +30,7 @@ export default function ProductGallery() {
         setError('');
         
         // Cargar productos públicos (sin autenticación)
-        const response = await fetch('http://localhost:3001/api/public/products');
+        const response = await fetch(`${API_URL}/public/products`);
         if (!response.ok) {
           throw new Error('Error al cargar productos');
         }
@@ -37,7 +38,7 @@ export default function ProductGallery() {
         setProducts(productsData);
         
         // Cargar categorías públicas
-        const categoriesResponse = await fetch('http://localhost:3001/api/public/categories');
+        const categoriesResponse = await fetch(`${API_URL}/public/categories`);
         if (categoriesResponse.ok) {
           const categoriesData = await categoriesResponse.json();
           setCategories(categoriesData);
@@ -86,7 +87,7 @@ export default function ProductGallery() {
     category: product.category_name || 'Sin categoría',
     description: product.description || 'Descripción no disponible',
     ingredients: 'Ingredientes frescos y de calidad',
-    image: product.image_url ? `http://localhost:3001${product.image_url}` : "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: product.image_url ? `${API_BASE_URL}${product.image_url}` : "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=800",
     // CAMBIO: De $ a CLP (pesos chilenos)
     price: `$${Math.round(product.price).toLocaleString('es-CL')}`,
     originalPrice: product.status === 'Agotado' ? undefined : undefined
