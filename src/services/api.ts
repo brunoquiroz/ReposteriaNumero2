@@ -1,5 +1,10 @@
 // ... existing code ...
 
+// Asegúrate de que la URL base sea correcta
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://tu-app.seenode.com/api'  // URL de producción en SeeNode
+  : 'http://localhost:3001/api';      // URL de desarrollo
+
 export interface SiteSettings {
   show_hero: string;
   [key: string]: string;
