@@ -1,15 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShoppingBag, 
-  LogOut, 
-  Home,
-  Plus,
-  Edit,
-  Trash2,
-  Tag,
-  Settings
-} from 'lucide-react';
-import { productsAPI, categoriesAPI, settingsAPI, Product, Category, SiteSettings } from '../services/api';
 import { API_BASE_URL } from '../config/constants';
 
 interface AdminPanelProps {
