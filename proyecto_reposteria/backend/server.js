@@ -9,7 +9,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 11550;
 
 // Configuración de multer para carga de archivos
 const storage = multer.diskStorage({
@@ -65,11 +65,11 @@ function parseDatabaseUrl(url) {
 
 // Configuración de la base de datos usando únicamente variables .env
 const dbConfig = {
-  host: process.env.DB_HOST || process.env.host,
-  user: process.env.DB_USER || process.env.username,
-  password: process.env.DB_PASSWORD || process.env.password,
-  database: process.env.DB_NAME || process.env.database,
-  port: parseInt(process.env.DB_PORT || process.env.port) || 3306
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT)
 };
 
 // Crear conexión a la base de datos
