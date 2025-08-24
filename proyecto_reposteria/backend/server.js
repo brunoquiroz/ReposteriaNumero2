@@ -51,26 +51,13 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Configuración de la base de datos
-// Función para parsear DATABASE_URL
-function parseDatabaseUrl(url) {
-  const urlObj = new URL(url);
-  return {
-    host: urlObj.hostname,
-    port: urlObj.port || 3306,
-    user: urlObj.username,
-    password: urlObj.password,
-    database: urlObj.pathname.slice(1) // Remover el '/' inicial
-  };
-}
-
-// Configuración de la base de datos usando únicamente variables .env
-// La configuración ya existente usará las nuevas variables
 const dbConfig = {
-  host: process.env.DB_HOST || process.env.host,
-  user: process.env.DB_USER || process.env.username,
-  password: process.env.DB_PASSWORD || process.env.password,
-  database: process.env.DB_NAME || process.env.database, // Ahora será 'reposteria'
-  port: parseInt(process.env.DB_PORT || process.env.port) || 3306
+  host: process.env.DB_HOST || 'srv2021.hstgr.io',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'u896143123_reposteria',
+  port: process.env.DB_PORT || 3306,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
 
 // Crear conexión a la base de datos
