@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
-import { productsAPI, categoriesAPI, Product, Category } from '../services/api';
+import { Product } from '../services/api';
 import { API_URL, API_BASE_URL } from '../config/constants';
 
 interface DisplayProduct {
@@ -18,7 +18,6 @@ export default function ProductGallery() {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [selectedProduct, setSelectedProduct] = useState<DisplayProduct | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -40,8 +39,7 @@ export default function ProductGallery() {
         // Cargar categorías públicas
         const categoriesResponse = await fetch(`${API_URL}/public/categories`);
         if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          setCategories(categoriesData);
+          await categoriesResponse.json();
         }
       } catch (error) {
         console.error('Error cargando productos:', error);
@@ -54,22 +52,16 @@ export default function ProductGallery() {
             name: "Torta Red Velvet",
             price: 35000,
             category_id: 1,
-            category_name: "Tortas",
-            status: "Disponible",
             description: "Clásica torta red velvet con frosting de cream cheese",
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            created_at: new Date().toISOString()
           },
           {
             id: 2,
             name: "Brownies Premium",
             price: 18000,
             category_id: 2,
-            category_name: "Brownies",
-            status: "Disponible",
             description: "Brownies fudge con nueces y chocolate belga",
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            created_at: new Date().toISOString()
           }
         ]);
       } finally {
@@ -84,13 +76,12 @@ export default function ProductGallery() {
   const displayProducts: DisplayProduct[] = products.map(product => ({
     id: product.id,
     name: product.name,
-    category: product.category_name || 'Sin categoría',
+    category: 'Sin categoría', // Simplificado ya que no tenemos category_name en Product
     description: product.description || 'Descripción no disponible',
     ingredients: 'Ingredientes frescos y de calidad',
     image: product.image_url ? `${API_BASE_URL}${product.image_url}` : "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=800",
-    // CAMBIO: De $ a CLP (pesos chilenos)
     price: `$${Math.round(product.price).toLocaleString('es-CL')}`,
-    originalPrice: product.status === 'Agotado' ? undefined : undefined
+    originalPrice: undefined // Simplificado ya que no tenemos status en Product
   }));
 
   // Obtener categorías únicas para el filtro

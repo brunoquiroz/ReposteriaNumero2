@@ -19,7 +19,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     try {
       const response = await authAPI.login(credentials.username, credentials.password);
       localStorage.setItem('adminToken', response.token);
-      localStorage.setItem('adminUser', JSON.stringify(response.user));
+      // Remover esta línea: localStorage.setItem('adminUser', JSON.stringify(response.user));
       onLogin(true);
     } catch (error: any) {
       setError(error.response?.data?.message || 'Error de conexión');

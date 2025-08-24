@@ -25,11 +25,16 @@ const Admin: React.FC = () => {
     localStorage.removeItem('adminSession');
   };
 
+  const handleBackToSite = () => {
+    // Implementar lógica para volver al sitio principal
+    window.location.href = '/';
+  };
+
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
   }
 
-  return <AdminPanel onLogout={handleLogout} />;
+  return <AdminPanel onLogout={handleLogout} onBackToSite={handleBackToSite} />;
 };
 
 export default Admin;

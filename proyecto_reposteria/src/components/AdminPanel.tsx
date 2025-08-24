@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { ShoppingBag, Settings, Plus, Edit, Trash2, Home, LogOut } from 'lucide-react';
 import { API_BASE_URL } from '../config/constants';
+import { productsAPI, categoriesAPI, settingsAPI, Product, Category, SiteSettings } from '../services/api';
 
 interface AdminPanelProps {
   onLogout: () => void;

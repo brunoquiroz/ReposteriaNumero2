@@ -1,4 +1,3 @@
-import React from 'react';
 import { Menu, X, Settings } from 'lucide-react';
 
 interface HeaderProps {

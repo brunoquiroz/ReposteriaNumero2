@@ -1,4 +1,3 @@
-import React from 'react';
 import { Instagram, MessageCircle, MapPin, Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
