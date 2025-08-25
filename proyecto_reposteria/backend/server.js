@@ -58,6 +58,7 @@ const dbConfig = {
   database: process.env.DB_NAME || 'u896143123_reposteria2',
   port: process.env.DB_PORT || 3306,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  // Removidas: connectTimeout, acquireTimeout, timeout (no válidas para conexiones)
 };
 
 // Crear conexión a la base de datos
