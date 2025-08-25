@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Configuración de la base de datos SeeNode
 const dbConfig = {
-  host: 'srv2021.hstgr.io',
+  host: 'localhost',
   port: 3306,
   user: 'u896143123_root',
   password: 'Coffeandtv1',
