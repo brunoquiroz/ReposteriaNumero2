@@ -1,2 +1,2 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://lightgray-jellyfish-827333.hostingersite.com/api';
-export const API_URL = import.meta.env.VITE_API_URL || 'https://lightgray-jellyfish-827333.hostingersite.com';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'lightgray-jellyfish-827333.hostingersite.com/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'lightgray-jellyfish-827333.hostingersite.com';
