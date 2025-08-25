@@ -31,7 +31,7 @@ export default function ProductGallery() {
         // Cargar productos públicos (sin autenticación)
         const response = await fetch(`${API_BASE_URL}/public/products`);
         if (!response.ok) {
-          throw new Error('Error al cargar productos');
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
         const productsData = await response.json();
         setProducts(productsData);
@@ -43,27 +43,30 @@ export default function ProductGallery() {
         }
       } catch (error) {
         console.error('Error cargando productos:', error);
-        setError('Error al cargar los productos. Por favor, intenta nuevamente.');
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+        setError(`Error al cargar los productos: ${errorMessage}`);
         
-        // Fallback a datos estáticos si la API no está disponible
-        setProducts([
-          {
-            id: 1,
-            name: "Torta Red Velvet",
-            price: 35000,
-            category_id: 1,
-            description: "Clásica torta red velvet con frosting de cream cheese",
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 2,
-            name: "Brownies Premium",
-            price: 18000,
-            category_id: 2,
-            description: "Brownies fudge con nueces y chocolate belga",
-            created_at: new Date().toISOString()
-          }
-        ]);
+        // Fallback a datos estáticos solo en desarrollo
+        if (import.meta.env.DEV) {
+          setProducts([
+            {
+              id: 1,
+              name: "Torta Red Velvet",
+              price: 35000,
+              category_id: 1,
+              description: "Clásica torta red velvet con frosting de cream cheese",
+              created_at: new Date().toISOString()
+            },
+            {
+              id: 2,
+              name: "Brownies Premium",
+              price: 18000,
+              category_id: 2,
+              description: "Brownies fudge con nueces y chocolate belga",
+              created_at: new Date().toISOString()
+            }
+          ]);
+        }
       } finally {
         setLoading(false);
       }
