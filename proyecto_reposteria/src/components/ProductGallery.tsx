@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
 import { Product } from '../services/api';
-import { API_URL, API_BASE_URL } from '../config/constants';
+import { API_BASE_URL } from '../config/constants';
 
 interface DisplayProduct {
   id: number;
@@ -29,7 +29,7 @@ export default function ProductGallery() {
         setError('');
         
         // Cargar productos públicos (sin autenticación)
-        const response = await fetch(`${API_URL}/public/products`);
+        const response = await fetch(`${API_BASE_URL}/public/products`);
         if (!response.ok) {
           throw new Error('Error al cargar productos');
         }
@@ -37,7 +37,7 @@ export default function ProductGallery() {
         setProducts(productsData);
         
         // Cargar categorías públicas
-        const categoriesResponse = await fetch(`${API_URL}/public/categories`);
+        const categoriesResponse = await fetch(`${API_BASE_URL}/public/categories`);
         if (categoriesResponse.ok) {
           await categoriesResponse.json();
         }

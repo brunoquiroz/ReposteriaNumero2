@@ -1,8 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../config/constants';
-
-// Configuración para usar siempre SeeNode (sin localhost)
-const API_BASE_URL = API_URL;
+import { API_BASE_URL } from '../config/constants';
 
 // Crear instancia de axios
 const api = axios.create({
