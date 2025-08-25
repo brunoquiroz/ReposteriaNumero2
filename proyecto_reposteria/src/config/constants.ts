@@ -1,2 +1,2 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550/api';
-export const API_URL = import.meta.env.VITE_API_URL || 'https://up-de-fra1-mysql-1.db.run-on-seenode.com:11550';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://lightgray-jellyfish-827333.hostingersite.com/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://lightgray-jellyfish-827333.hostingersite.com';
