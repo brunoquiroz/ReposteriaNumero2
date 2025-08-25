@@ -53,9 +53,9 @@ app.use('/uploads', express.static('uploads'));
 // Configuración de la base de datos
 const dbConfig = {
   host: process.env.DB_HOST || 'srv2021.hstgr.io',
-  user: process.env.DB_USER || 'root',
+  user: process.env.DB_USER || 'u896143123_root2',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'u896143123_reposteria',
+  database: process.env.DB_NAME || 'u896143123_reposteria2',
   port: process.env.DB_PORT || 3306,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
