@@ -3,11 +3,11 @@ require('dotenv').config();
 
 // Configuración de la base de datos SeeNode
 const dbConfig = {
-  host: 'up-de-fra1-mysql-1.db.run-on-seenode.com',
-  port: 11550,
-  user: 'db_n3nv4jxto8ds',
-  password: 'EQRBFExDGFKZSoMQNaIjTLpq',
-  database: 'db_n3nv4jxto8ds'
+  host: 'srv2021.hstgr.io',
+  port: 3306,
+  user: 'u896143123_root',
+  password: 'Coffeandtv1',
+  database: 'u896143123_reposteria'
 };
 
 const initSQL = `
@@ -77,40 +77,40 @@ CREATE INDEX IF NOT EXISTS idx_settings_key ON site_settings(setting_key);
 
 async function initDatabase() {
   let connection;
-  
+
   try {
     console.log('🔍 Conectando a la base de datos SeeNode...');
     console.log('🔗 Host:', dbConfig.host);
     console.log('📊 Base de datos:', dbConfig.database);
-    
+
     connection = await mysql.createConnection(dbConfig);
     console.log('✅ Conectado exitosamente a SeeNode MySQL');
-    
+
     // Ejecutar el script SQL
     console.log('🚀 Ejecutando script de inicialización...');
     const statements = initSQL.split(';').filter(stmt => stmt.trim());
-    
+
     for (const statement of statements) {
       if (statement.trim()) {
         await connection.execute(statement);
       }
     }
-    
+
     console.log('✅ Base de datos inicializada correctamente');
-    
+
     // Verificar que las tablas se crearon
     const [tables] = await connection.execute('SHOW TABLES');
     console.log('📋 Tablas creadas:', tables.map(t => Object.values(t)[0]));
-    
+
     // Verificar usuario admin
     const [users] = await connection.execute('SELECT username FROM admin_users');
     console.log('👤 Usuarios admin:', users.map(u => u.username));
-    
+
     console.log('\n🎉 ¡Inicialización completada!');
     console.log('🔑 Credenciales de admin:');
     console.log('   Usuario: admin');
     console.log('   Contraseña: admin123');
-    
+
   } catch (error) {
     console.error('❌ Error inicializando la base de datos:', error.message);
     if (error.code) {
