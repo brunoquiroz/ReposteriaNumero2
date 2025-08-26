@@ -71,7 +71,10 @@ function App() {
   console.log('App render - showAdminLogin:', showAdminLogin, 'showAdminPanel:', showAdminPanel, 'isAdmin:', isAdmin);
 
   if (showAdminLogin) {
-    return <AdminLogin onLogin={handleAdminLogin} />;
+    return <AdminLogin 
+      onLogin={handleAdminLogin} 
+      onClose={() => setShowAdminLogin(false)}
+    />;
   }
 
   if (showAdminPanel) {

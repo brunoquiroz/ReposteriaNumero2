@@ -1,103 +1,206 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../config/constants';
+import { supabase } from '../lib/supabase'
+import type { Database } from '../lib/supabase'
 
-// Crear instancia de axios
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Interceptor para agregar token de autenticación
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('adminToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  category_id: number;
-  image_url?: string;
-  created_at: string;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  description?: string;
-}
+type Product = Database['public']['Tables']['products']['Row']
+type Category = Database['public']['Tables']['categories']['Row']
+type ProductInsert = Database['public']['Tables']['products']['Insert']
+type CategoryInsert = Database['public']['Tables']['categories']['Insert']
 
 export interface SiteSettings {
-  show_hero: string;
-  [key: string]: string;
+  show_hero: string
+  [key: string]: string
 }
 
 // API para productos
 export const productsAPI = {
   getAll: async (): Promise<Product[]> => {
-    const response = await api.get('/products');
-    return response.data;
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data || []
   },
-  create: async (product: Omit<Product, 'id' | 'created_at'>): Promise<Product> => {
-    const response = await api.post('/products', product);
-    return response.data;
+
+  getPublic: async (): Promise<Product[]> => {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data || []
   },
-  update: async (id: number, product: Partial<Product>): Promise<Product> => {
-    const response = await api.put(`/products/${id}`, product);
-    return response.data;
+
+  create: async (product: ProductInsert): Promise<Product> => {
+    const { data, error } = await supabase
+      .from('products')
+      .insert(product)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
   },
+
+  update: async (id: number, product: Partial<ProductInsert>): Promise<Product> => {
+    const { data, error } = await supabase
+      .from('products')
+      .update(product)
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
+  },
+
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/products/${id}`);
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
   },
-};
+
+  uploadImage: async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `product-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    
+    const { error: uploadError } = await supabase.storage
+      .from('product-images')
+      .upload(fileName, file)
+    
+    if (uploadError) throw uploadError
+    
+    const { data } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(fileName)
+    
+    return data.publicUrl
+  }
+}
 
 // API para categorías
 export const categoriesAPI = {
   getAll: async (): Promise<Category[]> => {
-    const response = await api.get('/categories');
-    return response.data;
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name')
+    
+    if (error) throw error
+    return data || []
   },
-  create: async (category: Omit<Category, 'id'>): Promise<Category> => {
-    const response = await api.post('/categories', category);
-    return response.data;
+
+  getPublic: async (): Promise<Category[]> => {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name')
+    
+    if (error) throw error
+    return data || []
   },
-  update: async (id: number, category: Partial<Category>): Promise<Category> => {
-    const response = await api.put(`/categories/${id}`, category);
-    return response.data;
+
+  create: async (category: CategoryInsert): Promise<Category> => {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert(category)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
   },
+
+  update: async (id: number, category: Partial<CategoryInsert>): Promise<Category> => {
+    const { data, error } = await supabase
+      .from('categories')
+      .update(category)
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    return data
+  },
+
   delete: async (id: number): Promise<void> => {
-    await api.delete(`/categories/${id}`);
-  },
-};
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+  }
+}
 
 // API para configuraciones
 export const settingsAPI = {
   getAll: async (): Promise<SiteSettings> => {
-    const response = await api.get('/settings');
-    return response.data;
+    const { data, error } = await supabase
+      .from('settings')
+      .select('*')
+    
+    if (error) throw error
+    
+    const settings: SiteSettings = { show_hero: 'true' }
+    data?.forEach(setting => {
+      settings[setting.key] = setting.value
+    })
+    
+    return settings
   },
+
   getPublic: async (): Promise<SiteSettings> => {
-    const response = await fetch(`${API_BASE_URL}/public/settings`);
-    return response.json();
+    const { data, error } = await supabase
+      .from('settings')
+      .select('*')
+    
+    if (error) throw error
+    
+    const settings: SiteSettings = { show_hero: 'true' }
+    data?.forEach(setting => {
+      settings[setting.key] = setting.value
+    })
+    
+    return settings
   },
+
   update: async (key: string, value: string): Promise<void> => {
-    await api.put(`/settings/${key}`, { value });
-  },
-};
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ key, value })
+    
+    if (error) throw error
+  }
+}
 
-// API para autenticación
+// API para autenticación (usando Supabase Auth)
 export const authAPI = {
-  login: async (username: string, password: string): Promise<{ token: string }> => {
-    const response = await api.post('/auth/login', { username, password });
-    return response.data;
+  login: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+    
+    if (error) throw error
+    return { token: data.session?.access_token || '' }
   },
-};
 
-export default api;
+  logout: async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+  },
+
+  getCurrentUser: async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    return user
+  }
+}
+
+export { supabase }
+export type { Product, Category }

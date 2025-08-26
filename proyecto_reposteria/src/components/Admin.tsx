@@ -13,11 +13,9 @@ const Admin: React.FC = () => {
     }
   }, []);
 
-  const handleLogin = (success: boolean) => {
-    if (success) {
-      setIsAuthenticated(true);
-      localStorage.setItem('adminSession', 'active');
-    }
+  const handleLogin = () => {  // Remover el parámetro success
+    setIsAuthenticated(true)
+    localStorage.setItem('adminSession', 'active')
   };
 
   const handleLogout = () => {
@@ -31,7 +29,7 @@ const Admin: React.FC = () => {
   };
 
   if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} />;
+    return <AdminLogin onLogin={handleLogin} onClose={() => window.location.href = '/'} />;
   }
 
   return <AdminPanel onLogout={handleLogout} onBackToSite={handleBackToSite} />;
