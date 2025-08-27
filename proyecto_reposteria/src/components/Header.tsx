@@ -1,4 +1,4 @@
-import { Menu, X, Settings } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -7,7 +7,7 @@ interface HeaderProps {
   isAdmin?: boolean;
 }
 
-export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmin }: HeaderProps) {
+export default function Header({ isMenuOpen, setIsMenuOpen }: HeaderProps) {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -22,7 +22,7 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold text-amber-800" style={{ fontFamily: 'Playfair Display, serif' }}>
-              Dulce Arte
+              Tortas Caseras Puyehue
             </h1>
           </div>
           
@@ -45,13 +45,6 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
               className="text-amber-700 hover:text-amber-800 transition-colors font-medium"
             >
               Contacto
-            </button>
-            <button
-              onClick={onAdminClick}
-              className="flex items-center space-x-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md transition-colors"
-            >
-              <Settings size={16} />
-              <span>{isAdmin ? 'Panel Admin' : 'Admin'}</span>
             </button>
           </nav>
 
@@ -87,13 +80,6 @@ export default function Header({ isMenuOpen, setIsMenuOpen, onAdminClick, isAdmi
                 className="block px-3 py-2 text-amber-700 hover:text-amber-800 transition-colors font-medium w-full text-left"
               >
                 Contacto
-              </button>
-              <button
-                onClick={onAdminClick}
-                className="flex items-center space-x-1 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md transition-colors w-full"
-              >
-                <Settings size={16} />
-                <span>{isAdmin ? 'Panel Admin' : 'Admin'}</span>
               </button>
             </div>
           </div>

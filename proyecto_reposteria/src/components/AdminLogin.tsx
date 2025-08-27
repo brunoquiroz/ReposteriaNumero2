@@ -1,9 +1,18 @@
 import { useState } from 'react'
 import { Lock, Mail } from 'lucide-react'
-import { authAPI } from '../services/api'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase environment variables are missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.')
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 interface AdminLoginProps {
-  onLogin: (success: boolean) => void  // Cambiar aquí
+  onLogin: (success: boolean) => void
   onClose: () => void
 }
 
@@ -19,14 +28,25 @@ export default function AdminLogin({ onLogin, onClose }: AdminLoginProps) {
     setError('')
 
     try {
-      const { token } = await authAPI.login(email, password)
-      localStorage.setItem('adminToken', token)
-      onLogin(true)  // Pasar true para indicar éxito
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error || !data.session) {
+        setError('Credenciales inválidas')
+        onLogin(false)
+        setLoading(false)
+        return
+      }
+
+      localStorage.setItem('adminToken', data.session.access_token)
+      onLogin(true)
       onClose()
     } catch (error) {
       console.error('Error de login:', error)
-      setError('Credenciales inválidas')
-      onLogin(false)  // Pasar false para indicar fallo
+      setError('Error de autenticación')
+      onLogin(false)
     } finally {
       setLoading(false)
     }
@@ -38,7 +58,7 @@ export default function AdminLogin({ onLogin, onClose }: AdminLoginProps) {
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           Acceso Administrativo
         </h2>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -56,7 +76,7 @@ export default function AdminLogin({ onLogin, onClose }: AdminLoginProps) {
               />
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Contraseña
@@ -73,13 +93,13 @@ export default function AdminLogin({ onLogin, onClose }: AdminLoginProps) {
               />
             </div>
           </div>
-          
+
           {error && (
             <div className="text-red-600 text-sm text-center">
               {error}
             </div>
           )}
-          
+
           <div className="flex gap-4">
             <button
               type="button"

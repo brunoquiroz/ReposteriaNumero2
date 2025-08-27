@@ -1,4 +1,4 @@
-import { Instagram, MessageCircle, MapPin, Phone, Mail } from 'lucide-react';
+import { Instagram, MessageCircle, MapPin, Phone, Mail, Facebook } from 'lucide-react';
 
 export default function Footer() {
   const scrollToSection = (sectionId: string) => {
@@ -26,14 +26,29 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/share/1JVrhqdBFe/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-10 h-10 bg-blue-700 rounded-full hover:bg-blue-600 transition-colors duration-300"
+                title="Síguenos en Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.instagram.com/yake.antinao?igsh=MTFvMTk0dG1iNjBtdg=="
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center w-10 h-10 bg-amber-700 rounded-full hover:bg-amber-600 transition-colors duration-300"
+                title="Síguenos en Instagram"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://wa.me/56954228860"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center w-10 h-10 bg-green-700 rounded-full hover:bg-green-600 transition-colors duration-300"
+                title="Contáctanos por WhatsApp"
               >
                 <MessageCircle className="h-5 w-5" />
               </a>
@@ -89,16 +104,16 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-amber-400" />
-                <span className="text-amber-200">+56 9 1234 5678</span>
+                <span className="text-amber-200">+56 9 5422 8860</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-amber-400" />
-                <span className="text-amber-200">hola@dulcearte.cl</span>
+                <span className="text-amber-200">yakeantinao6@gmail.com</span>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 mt-1 text-amber-400" />
                 <span className="text-amber-200">
-                  Entregamos en Santiago Centro y Providencia
+                  Puyehue kilometro 8 desde hualpin camino asia puerto dominguez, Teodoro Schmidt, Araucanía
                 </span>
               </li>
             </ul>
@@ -108,7 +123,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-amber-800 mt-12 pt-8 text-center">
           <p className="text-amber-300">
-            © 2024 Dulce Arte. Todos los derechos reservados. 
+            © 2025 Tortas Caseras Puyehue. Todos los derechos reservados. 
             <span className="block sm:inline sm:ml-2">
               Hecho con ❤️ para endulzar tus momentos especiales.
             </span>

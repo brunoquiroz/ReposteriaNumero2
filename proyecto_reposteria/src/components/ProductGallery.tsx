@@ -9,8 +9,8 @@ interface DisplayProduct {
   description: string
   ingredients: string
   image: string
-  price: string
-  originalPrice?: string
+  price: number
+  originalPrice?: number
 }
 
 export default function ProductGallery() {
@@ -20,6 +20,15 @@ export default function ProductGallery() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Función para formatear precios en formato chileno
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      minimumFractionDigits: 0
+    }).format(price);
+  };
 
   // Cargar productos y categorías desde Supabase
   useEffect(() => {
@@ -57,7 +66,7 @@ export default function ProductGallery() {
       description: product.description || 'Descripción no disponible',
       ingredients: 'Ingredientes premium seleccionados',
       image: product.image_url || '/placeholder-product.jpg',
-      price: `$${product.price.toLocaleString()}`,
+      price: product.price,
       originalPrice: undefined
     }
   })
@@ -157,7 +166,7 @@ export default function ProductGallery() {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-2xl font-bold text-pink-600">
-                    {product.price}
+                    {formatPrice(product.price)}
                   </span>
                   <button className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors">
                     Ver más

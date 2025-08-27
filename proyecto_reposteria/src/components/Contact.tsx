@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Instagram, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Instagram, MessageCircle, Facebook } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -7,14 +7,40 @@ export default function Contact() {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({ name: '', email: '', message: '' });
-    alert('¡Gracias por tu mensaje! Te contactaremos pronto.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('https://formspree.io/f/mpwjzbaq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _replyto: formData.email
+        })
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error al enviar el formulario:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -48,6 +74,18 @@ export default function Contact() {
               Déjanos un Mensaje
             </h3>
             
+            {submitStatus === 'success' && (
+              <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                ¡Mensaje enviado exitosamente! Te contactaremos pronto.
+              </div>
+            )}
+            
+            {submitStatus === 'error' && (
+              <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-amber-700 font-medium mb-2">
@@ -60,7 +98,8 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors disabled:opacity-50"
                   placeholder="Tu nombre completo"
                 />
               </div>
@@ -76,7 +115,8 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors disabled:opacity-50"
                   placeholder="tu@email.com"
                 />
               </div>
@@ -91,17 +131,19 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-lg border border-amber-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none transition-colors disabled:opacity-50"
                   placeholder="Cuéntanos qué dulce te gustaría encargar..."
                 />
               </div>
               
               <button
                 type="submit"
-                className="w-full py-3 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition-colors duration-300 transform hover:scale-105"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition-colors duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Enviar Mensaje
+                {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
               </button>
             </form>
           </div>
@@ -120,7 +162,7 @@ export default function Contact() {
                   </div>
                   <div className="ml-4">
                     <h4 className="text-lg font-semibold text-amber-800">Teléfono</h4>
-                    <p className="text-amber-600">+56 9 1234 5678</p>
+                    <p className="text-amber-600">+56 9 5422 8860</p>
                   </div>
                 </div>
                 
@@ -130,7 +172,7 @@ export default function Contact() {
                   </div>
                   <div className="ml-4">
                     <h4 className="text-lg font-semibold text-amber-800">Email</h4>
-                    <p className="text-amber-600">hola@dulcearte.cl</p>
+                    <p className="text-amber-600">yakeantinao6@gmail.com</p>
                   </div>
                 </div>
                 
@@ -140,7 +182,7 @@ export default function Contact() {
                   </div>
                   <div className="ml-4">
                     <h4 className="text-lg font-semibold text-amber-800">Ubicación</h4>
-                    <p className="text-amber-600">Santiago Centro y Providencia</p>
+                    <p className="text-amber-600">Puyehue kilometro 8 desde hualpin camino asia puerto dominguez, Teodoro Schmidt, Araucanía</p>
                   </div>
                 </div>
               </div>
@@ -153,16 +195,31 @@ export default function Contact() {
               </h4>
               <div className="flex space-x-4">
                 <a
-                  href="#"
-                  className="flex items-center justify-center w-12 h-12 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors duration-300 transform hover:scale-110"
+                  href="https://www.instagram.com/yake.antinao/?igsh=MTFvMTk0dG1iNjBtdg%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-110"
+                  title="Síguenos en Instagram"
                 >
                   <Instagram className="h-6 w-6" />
                 </a>
                 <a
-                  href="#"
+                  href="https://wa.me/56954228860"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center w-12 h-12 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 transform hover:scale-110"
+                  title="Escríbenos por WhatsApp"
                 >
                   <MessageCircle className="h-6 w-6" />
+                </a>
+                <a
+                  href="https://www.facebook.com/tortas.casera.puyehue?rdid=2KTYQ60IOzRZaqLj&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1JVrhqdBFe%2F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300 transform hover:scale-110"
+                  title="Síguenos en Facebook"
+                >
+                  <Facebook className="h-6 w-6" />
                 </a>
               </div>
             </div>

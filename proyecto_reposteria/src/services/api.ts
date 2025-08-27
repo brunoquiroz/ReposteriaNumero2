@@ -138,46 +138,6 @@ export const categoriesAPI = {
   }
 }
 
-// API para configuraciones
-export const settingsAPI = {
-  getAll: async (): Promise<SiteSettings> => {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('*')
-    
-    if (error) throw error
-    
-    const settings: SiteSettings = { show_hero: 'true' }
-    data?.forEach(setting => {
-      settings[setting.key] = setting.value
-    })
-    
-    return settings
-  },
-
-  getPublic: async (): Promise<SiteSettings> => {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('*')
-    
-    if (error) throw error
-    
-    const settings: SiteSettings = { show_hero: 'true' }
-    data?.forEach(setting => {
-      settings[setting.key] = setting.value
-    })
-    
-    return settings
-  },
-
-  update: async (key: string, value: string): Promise<void> => {
-    const { error } = await supabase
-      .from('settings')
-      .upsert({ key, value })
-    
-    if (error) throw error
-  }
-}
 
 // API para autenticación (usando Supabase Auth)
 export const authAPI = {
