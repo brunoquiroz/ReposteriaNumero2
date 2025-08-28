@@ -35,7 +35,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
         >
           <X className="h-6 w-6 text-amber-800" />
         </button>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="relative">
             <img
@@ -48,23 +48,23 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               }}
             />
           </div>
-          
+
           <div className="p-8">
             <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium mb-4">
               {product.category}
             </span>
-            
-            <h3 
+
+            <h3
               className="text-3xl font-bold text-amber-800 mb-4"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
               {product.name}
             </h3>
-            
+
             <p className="text-lg text-amber-700 mb-6 leading-relaxed">
               {product.description}
             </p>
-                        
+
             <div className="mb-6 p-4 bg-pink-50 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
@@ -72,7 +72,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     Precio:
                   </h4>
                   <div className="flex items-center">
-                    <span 
+                    <span
                       className="text-3xl font-bold text-pink-600"
                       style={{ fontFamily: 'Playfair Display, serif' }}
                     >
@@ -92,11 +92,11 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                 )}
               </div>
             </div>
-            
+
             {/* Botones de Redes Sociales */}
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-amber-800 text-center">
-                Contáctanos para hacer tu pedido personalizado
+                Contáctanos para hacer tu pedido
               </h4>
               <div className="flex justify-center space-x-6">
                 <a
