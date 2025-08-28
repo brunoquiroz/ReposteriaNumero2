@@ -14,14 +14,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <h3 
+            <h3
               className="text-3xl font-bold text-white mb-4"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
               Dulce Arte
             </h3>
             <p className="text-amber-200 leading-relaxed mb-6 max-w-md">
-              Creamos dulces momentos con repostería artesanal de la más alta calidad. 
+              Creamos dulces momentos con repostería artesanal de la más alta calidad.
               Cada producto es una obra de arte hecha con amor y dedicación.
             </p>
             <div className="flex space-x-4">
@@ -62,7 +62,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('inicio')}
                   className="text-amber-200 hover:text-white transition-colors"
                 >
@@ -70,7 +70,7 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('productos')}
                   className="text-amber-200 hover:text-white transition-colors"
                 >
@@ -78,15 +78,9 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection('sobre-nosotros')}
-                  className="text-amber-200 hover:text-white transition-colors"
-                >
-                  Sobre Nosotros
-                </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('contacto')}
                   className="text-amber-200 hover:text-white transition-colors"
                 >
@@ -123,7 +117,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-amber-800 mt-12 pt-8 text-center">
           <p className="text-amber-300">
-            © 2025 Tortas Caseras Puyehue. Todos los derechos reservados. 
+            © 2025 Tortas Caseras Puyehue. Todos los derechos reservados.
             <span className="block sm:inline sm:ml-2">
               Hecho con ❤️ para endulzar tus momentos especiales.
             </span>
